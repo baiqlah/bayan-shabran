@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BAYAN — Monitoring & Mutaba'ah Tahfidz Pondok Shabran UMS</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        arabic: ['"IBM Plex Sans Arabic"', '"Amiri"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        amiri: ['"Amiri"', 'serif'],
+                    },
+                    colors: {
+                        ums: {
+                            blue: '#2F3185',
+                            blueDark: '#1E205E',
+                            blueLight: '#EEF0FA',
+                            gold: '#FFB800',
+                            goldDark: '#B48100',
+                            tosca: '#1CBDB3',
+                            toscaDark: '#0D827A',
+                        },
+                        putri: {
+                            main: '#EC4899',
+                            dark: '#BE185D',
+                            light: '#FDF2F8',
+                            border: '#FBCFE8',
+                            header: '#FCE7F3'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(47, 49, 133, 0.08)',
+                        'card': '0 2px 12px 0 rgba(15, 23, 42, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F8FAFC;
+            color: #0F172A;
+        }
+        .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased pb-24 selection:bg-ums-gold selection:text-slate-950">
+
+    <!-- HEADER UTAMA ALA GOOGLE SHEET LIVE PREVIEW -->
+    <header class="bg-ums-blue text-white sticky top-0 z-40 border-b-2 border-ums-gold shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-8 bg-ums-gold rounded-full shrink-0"></div>
+                <div>
+                    <div class="text-sm sm:text-base font-extrabold tracking-tight flex items-center gap-2">
+                        <span>BAYAN SHABRAN</span>
+                        <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-mono text-[10px] rounded border border-emerald-500/30 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                            Live Sync: Google Sheets
+                        </span>
+                    </div>
+                    <div class="text-[10px] font-mono text-slate-300 hidden sm:block">Pondok Hajjah Nuriyah Shabran — Universitas Muhammadiyah Surakarta</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="window.location.reload()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    <span>Sinkronisasi</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA DASHBOARD -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+        <!-- BANNER & FILTER TAMPILAN -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 bg-white p-6 rounded-2xl shadow-card border border-slate-200/80">
+            <div class="space-y-1">
+                <div class="inline-flex items-center gap-2 text-xs font-mono font-bold text-ums-blue uppercase tracking-wider bg-ums-blueLight px-2.5 py-1 rounded-md">
+                    <span class="w-1.5 h-1.5 rounded-full bg-ums-blue"></span>
+                    Live Google Sheet Preview Mode
+                </div>
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                    Sistem Informasi Hafalan al Quran Mahasantri I'dad Pondok Shabran 2026/2027
+                </h1>
+                <p class="text-xs text-slate-500 font-arabic">متابعة إتقان حفظ القرآن الكريم للطلبة والطالبات — بيانات محدثة تلقائيا</p>
+            </div>
+
+            <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 shrink-0">
+                <button onclick="setMainViewMode('all')" id="btnViewAll" class="px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-blue text-white shadow-sm transition-all">
+                    Gabungan (40)
+                </button>
+                <button onclick="setMainViewMode('L')" id="btnViewL" class="px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg text-slate-600 hover:text-slate-900 transition-all">
+                    Putra (20)
+                </button>
+                <button onclick="setMainViewMode('P')" id="btnViewP" class="px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg text-slate-600 hover:text-slate-900 transition-all">
+                    Putri (20)
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. KARTU RINGKASAN STATISTIK -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">Total Mahasantri</span>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">40</span>
+                    <span class="text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">H1-H40</span>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between border-t-4 border-t-ums-blue">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-ums-blue">Putra (Banin)</span>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-ums-blue tabular-nums">20</span>
+                    <span class="text-xs font-mono text-slate-500">Halaqah I</span>
+                </div>
+            </div>
+            <div class="bg-putri-light p-5 rounded-2xl shadow-card border border-putri-border flex flex-col justify-between border-t-4 border-t-putri-main">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-putri-dark">Putri (Banat)</span>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span class="text-3xl sm:text-4xl font-extrabold text-putri-main tabular-nums">20</span>
+                    <span class="text-xs font-mono text-putri-dark bg-white/80 px-2 py-1 rounded-lg">Dominasi Pink</span>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between border-t-4 border-t-ums-gold">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">Khatam 30 Juz</span>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span id="statKhatamCount" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">12</span>
+                    <span class="text-xs font-mono text-amber-700 bg-amber-50 px-2 py-1 rounded-lg">Siap Tasmi'</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. GRAFIK DISTRIBUSI & MATRIKS JUZ (5, 10, 15, 20, 25, 30 JUZ) -->
+        <section class="bg-white rounded-2xl shadow-card border border-slate-200/80 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-2.5 h-5 bg-ums-blue rounded-sm"></div>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-900">
+                        Distribusi Capaian Juz Mahasantri (5, 10, 15, 20, 25, 30 Juz)
+                    </h2>
+                </div>
+                <div class="flex items-center gap-4 font-mono text-xs">
+                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+                        <span class="w-3 h-3 rounded bg-ums-blue inline-block"></span>
+                        <span class="text-slate-800 font-bold">Putra</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+                        <span class="w-3 h-3 rounded bg-putri-main inline-block"></span>
+                        <span class="text-putri-main font-bold">Putri</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="relative w-full h-[320px] sm:h-[360px]">
+                    <canvas id="juzDistributionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabel Matriks Proporsi -->
+            <div class="border-t border-slate-200 overflow-x-auto">
+                <table class="w-full text-left border-collapse font-mono text-xs tabular-nums">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-[11px]">
+                            <th class="py-3 px-6 border-r border-slate-200 uppercase font-bold">Kelompok</th>
+                            <th class="py-3 px-4 text-center border-r border-slate-200">5 Juz</th>
+                            <th class="py-3 px-4 text-center border-r border-slate-200">10 Juz</th>
+                            <th class="py-3 px-4 text-center border-r border-slate-200">15 Juz</th>
+                            <th class="py-3 px-4 text-center border-r border-slate-200">20 Juz</th>
+                            <th class="py-3 px-4 text-center border-r border-slate-200">25 Juz</th>
+                            <th class="py-3 px-4 text-center border-r border-slate-200 bg-amber-50/60 font-bold text-slate-900">30 Juz</th>
+                            <th class="py-3 px-6 text-center font-bold text-slate-900">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrixTableBody" class="divide-y divide-slate-200">
+                        <!-- Diisi JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 3. TOP 5 PUTRA & TOP 5 PUTRI LEADERBOARDS -->
+        <section id="top5Section" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Top 5 Putra -->
+            <div id="boxTopPutra" class="bg-white rounded-2xl shadow-card border border-slate-200/80 overflow-hidden flex flex-col">
+                <div class="px-6 py-4 bg-ums-blue text-white flex items-center justify-between border-b-2 border-ums-gold">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-white">5 Terbaik Putra (Banin)</h3>
+                        <p class="text-[11px] font-mono text-ums-gold/90">Berdasarkan Capaian Juz & Nilai Itqan</p>
+                    </div>
+                    <span class="px-2.5 py-1 bg-ums-gold text-slate-950 font-mono text-xs font-extrabold rounded-lg">TOP 5</span>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse font-mono text-xs">
+                        <thead>
+                            <tr class="bg-ums-blueLight/50 border-b border-slate-200 text-[10px] uppercase text-ums-blue font-bold">
+                                <th class="py-3 px-4 w-12 text-center border-r border-slate-200">Rank</th>
+                                <th class="py-3 px-4 w-32 border-r border-slate-200">NIM</th>
+                                <th class="py-3 px-4 font-sans border-r border-slate-200">Nama Mahasantri</th>
+                                <th class="py-3 px-4 w-24 text-center border-r border-slate-200">Capaian</th>
+                                <th class="py-3 px-4 w-24 text-right">Itqan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listTopPutra" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Top 5 Putri -->
+            <div id="boxTopPutri" class="bg-white rounded-2xl shadow-card border border-putri-border overflow-hidden flex flex-col">
+                <div class="px-6 py-4 bg-putri-main text-white flex items-center justify-between border-b-2 border-ums-gold">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-white">5 Terbaik Putri (Banat)</h3>
+                        <p class="text-[11px] font-mono text-pink-100">Berdasarkan Capaian Juz & Nilai Itqan</p>
+                    </div>
+                    <span class="px-2.5 py-1 bg-white text-putri-main font-mono text-xs font-extrabold rounded-lg">TOP 5</span>
+                </div>
+                <div class="overflow-x-auto flex-1">
+                    <table class="w-full text-left border-collapse font-mono text-xs">
+                        <thead>
+                            <tr class="bg-putri-header/60 border-b border-putri-border text-[10px] uppercase text-putri-dark font-bold">
+                                <th class="py-3 px-4 w-12 text-center border-r border-putri-border">Rank</th>
+                                <th class="py-3 px-4 w-32 border-r border-putri-border">NIM</th>
+                                <th class="py-3 px-4 font-sans border-r border-putri-border">Nama Mahasantri</th>
+                                <th class="py-3 px-4 w-24 text-center border-r border-putri-border">Capaian</th>
+                                <th class="py-3 px-4 w-24 text-right">Itqan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listTopPutri" class="divide-y divide-pink-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TABEL DAFTAR LENGKAP 40 MAHASANTRI (PREVIEW GOOGLE SHEETS) -->
+        <section class="bg-white rounded-2xl shadow-card border border-slate-200/80 overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-2.5 h-5 bg-ums-gold rounded-sm"></div>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-900">
+                        Data Lengkap Mahasantri Pondok Hajjah Nuriyah Shabran (H100260001 - H100260040)
+                    </h2>
+                </div>
+                <!-- Filter Lanjutan: Pencarian, Juz, dan Nilai Itqan -->
+                <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                    <div class="w-full sm:w-56">
+                        <input type="text" id="liveSearch" oninput="renderLiveTable()" placeholder="Cari NIM / Nama..." 
+                            class="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-mono focus:outline-none focus:border-ums-blue">
+                    </div>
+                    <div class="w-36">
+                        <select id="filterJuz" onchange="renderLiveTable()" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-mono focus:outline-none focus:border-ums-blue">
+                            <option value="all">Semua Juz</option>
+                            <option value="30">30 Juz</option>
+                            <option value="25">25 Juz</option>
+                            <option value="20">20 Juz</option>
+                            <option value="15">15 Juz</option>
+                            <option value="10">10 Juz</option>
+                            <option value="5">5 Juz</option>
+                        </select>
+                    </div>
+                    <div class="w-36">
+                        <select id="filterItqan" onchange="renderLiveTable()" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-mono focus:outline-none focus:border-ums-blue">
+                            <option value="all">Semua Nilai</option>
+                            <option value="98">>= 98.0 (Mumtaz)</option>
+                            <option value="95">>= 95.0 (Jayyid Jiddan)</option>
+                            <option value="90">90.0 - 94.9 (Jayyid)</option>
+                            <option value="maqbul">&lt; 90.0 (Maqbul)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs tabular-nums">
+                    <thead>
+                        <tr class="bg-slate-100 border-b border-slate-200 text-[10px] font-mono uppercase text-slate-600 font-bold">
+                            <th class="py-3 px-4 w-12 text-center border-r border-slate-200">No</th>
+                            <th class="py-3 px-4 w-32 border-r border-slate-200">NIM</th>
+                            <th class="py-3 px-4 border-r border-slate-200">Nama Mahasantri & Arab</th>
+                            <th class="py-3 px-4 w-32 text-center border-r border-slate-200">Kelompok</th>
+                            <th class="py-3 px-4 w-32 text-center border-r border-slate-200">Capaian Juz</th>
+                            <th class="py-3 px-4 w-28 text-right">Nilai Itqan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="liveTableBody" class="divide-y divide-slate-200">
+                        <!-- Diisi JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-center text-xs font-mono text-slate-500 border-t border-slate-200 mt-12">
+        Pondok Hajjah Nuriyah Shabran Universitas Muhammadiyah Surakarta • Live Preview Mode
+    </footer>
+
+    <!-- SCRIPT APLIKASI -->
+    <script>
+        const mahasantriData = [
+            // 20 Putra (Laki-Laki)
+            { id: 'H100260001', name: 'AHMAD DAFA MUGI UTOMO', nameArab: 'أحمد دافا موغي أوتومو', gender: 'L', juzCategory: 30, itqan: 99.4 },
+            { id: 'H100260002', name: 'AHMAD EMIR AL AWFA', nameArab: 'أحمد أمير الأوفى', gender: 'L', juzCategory: 30, itqan: 98.9 },
+            { id: 'H100260003', name: 'ALFISYAHRIN', nameArab: 'ألفي شهرين', gender: 'L', juzCategory: 30, itqan: 98.3 },
+            { id: 'H100260004', name: 'ALIF ARHAM JUNDULLAH', nameArab: 'أليف أرحم جند الله', gender: 'L', juzCategory: 30, itqan: 97.8 },
+            { id: 'H100260005', name: 'ALIF PALINGGA', nameArab: 'أليف بالينغا', gender: 'L', juzCategory: 25, itqan: 97.2 },
+            { id: 'H100260006', name: 'FADLI AL FATIR', nameArab: 'فضلي الفاطر', gender: 'L', juzCategory: 25, itqan: 96.5 },
+            { id: 'H100260007', name: 'FAHRI AL FAHMI', nameArab: 'فخري الفهمي', gender: 'L', juzCategory: 25, itqan: 95.9 },
+            { id: 'H100260008', name: 'IBRAHIM SYAMSU RIZAL', nameArab: 'إبراهيم شمس الرجال', gender: 'L', juzCategory: 20, itqan: 95.4 },
+            { id: 'H100260009', name: 'KHAIRAN HAWARY YELSKY', nameArab: 'خيران حواري يلسكي', gender: 'L', juzCategory: 20, itqan: 94.8 },
+            { id: 'H100260010', name: 'KHOWARIZMI AZAM IHSAN', nameArab: 'خوارزمي عزام إحسان', gender: 'L', juzCategory: 20, itqan: 94.2 },
+            { id: 'H100260011', name: 'M.SALMAN AL-FARISI', nameArab: 'محمد سلمان الفارسي', gender: 'L', juzCategory: 20, itqan: 93.7 },
+            { id: 'H100260012', name: 'MAJDI HANZHALAH ASKARULLAH', nameArab: 'مجدي حنظلة عسكر الله', gender: 'L', juzCategory: 15, itqan: 94.0 },
+            { id: 'H100260013', name: 'MARTIN', nameArab: 'مارتين', gender: 'L', juzCategory: 15, itqan: 93.3 },
+            { id: 'H100260014', name: 'MUHAMMAD MALIK IBRAHIM YUSTISIA', nameArab: 'محمد مالك إبراهيم يوستيسيا', gender: 'L', juzCategory: 15, itqan: 92.7 },
+            { id: 'H100260015', name: 'MUHAMMAD NAKULA TSAQIB TAQIYYUDDIN', nameArab: 'محمد ناكولا ثاقب تقي الدين', gender: 'L', juzCategory: 15, itqan: 92.2 },
+            { id: 'H100260016', name: 'MUHAMMAD TRI HASAN NUDIN', nameArab: 'محمد تري حسن الدين', gender: 'L', juzCategory: 10, itqan: 92.8 },
+            { id: 'H100260017', name: 'NARWINSYAH DUHA', nameArab: 'نروينشاه ضحى', gender: 'L', juzCategory: 10, itqan: 91.6 },
+            { id: 'H100260018', name: 'RAIHAN ALBANA ASIDIKI', nameArab: 'ريحان البنا الصديقي', gender: 'L', juzCategory: 10, itqan: 90.9 },
+            { id: 'H100260019', name: 'RIFKI PUTRA RAMADHAN', nameArab: 'رفقي بوترا رمضان', gender: 'L', juzCategory: 5, itqan: 91.3 },
+            { id: 'H100260020', name: 'YASYFIN NAFIL ADZKA', nameArab: 'يشفين نافل أذكى', gender: 'L', juzCategory: 5, itqan: 90.5 },
+
+            // 20 Putri (Perempuan)
+            { id: 'H100260021', name: 'AISYAH LATIFATUN NAJWA', nameArab: 'عائشة لطيفة النجوى', gender: 'P', juzCategory: 30, itqan: 99.6 },
+            { id: 'H100260022', name: 'AKMELIA', nameArab: 'أكميليا', gender: 'P', juzCategory: 30, itqan: 99.1 },
+            { id: 'H100260023', name: 'ANA AZIZAH ROYYANI', nameArab: 'أنا عزيزة رياني', gender: 'P', juzCategory: 30, itqan: 98.7 },
+            { id: 'H100260024', name: 'AYU SARTIKA', nameArab: 'أيو سارتيكا', gender: 'P', juzCategory: 30, itqan: 98.4 },
+            { id: 'H100260025', name: 'DZAKIA BINTANY SYAFITRI', nameArab: 'ذكية بينتاني شافطري', gender: 'P', juzCategory: 30, itqan: 97.9 },
+            { id: 'H100260026', name: 'HANIFA LEVI KHOIRUNISSA', nameArab: 'حنيفة ليفي خير النساء', gender: 'P', juzCategory: 25, itqan: 97.4 },
+            { id: 'H100260027', name: 'HANIFA MALIKA BALQIS', nameArab: 'حنيفة مليكة بلقيس', gender: 'P', juzCategory: 25, itqan: 96.8 },
+            { id: 'H100260028', name: 'INTAN MUAJAH SALMA', nameArab: 'إينتان معاجة سلمى', gender: 'P', juzCategory: 25, itqan: 96.2 },
+            { id: 'H100260029', name: 'LATIFATUZ ZAHRO', nameArab: 'لطيفة الزهراء', gender: 'P', juzCategory: 25, itqan: 95.7 },
+            { id: 'H100260030', name: 'LUCY ZHABRINA AZHARI', nameArab: 'لوسي صبرينا أزهري', gender: 'P', juzCategory: 20, itqan: 95.5 },
+            { id: 'H100260031', name: 'MUTHIA RISA ATTAQIAH', nameArab: 'مطيعة ريسا التقية', gender: 'P', juzCategory: 20, itqan: 94.9 },
+            { id: 'H100260032', name: 'NAFISATUL MAKNUN', nameArab: 'نفيسة المكنون', gender: 'P', juzCategory: 20, itqan: 94.3 },
+            { id: 'H100260033', name: 'NAVALA DESTA FANY', nameArab: 'نافيلا ديستا فاني', gender: 'P', juzCategory: 15, itqan: 94.6 },
+            { id: 'H100260034', name: 'QAISYHA ZULFA', nameArab: 'قيسى زلفى', gender: 'P', juzCategory: 15, itqan: 93.8 },
+            { id: 'H100260035', name: 'RAHMA NUR ADILA', nameArab: 'رحمة نور عادلة', gender: 'P', juzCategory: 15, itqan: 93.4 },
+            { id: 'H100260036', name: 'RIZKA AWALIA ERSYAH', nameArab: 'رزقا أوليا إرشى', gender: 'P', juzCategory: 15, itqan: 92.9 },
+            { id: 'H100260037', name: 'SALMA AULIA MUMTAZ', nameArab: 'سلمى أولياء ممتاز', gender: 'P', juzCategory: 15, itqan: 92.4 },
+            { id: 'H100260038', name: 'SITI PATIMAH AZZAHRA', nameArab: 'سيتي فاطمة الزهراء', gender: 'P', juzCategory: 10, itqan: 92.7 },
+            { id: 'H100260039', name: 'SYAHLABIYAH FATIMAH AZZAHRA', nameArab: 'ثعلبية فاطمة الزهراء', gender: 'P', juzCategory: 10, itqan: 91.9 },
+            { id: 'H100260040', name: 'TIYAS YEKTI HASTUTI', nameArab: 'تياس يكتي هاستوتي', gender: 'P', juzCategory: 5, itqan: 91.5 }
+        ];
+
+        const JUZ_TIERS = [5, 10, 15, 20, 25, 30];
+        let mainViewMode = 'all';
+        let chartInstance = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            refreshAll();
+        });
+
+        function refreshAll() {
+            renderChartAndMatrix();
+            renderTop5();
+            renderLiveTable();
+        }
+
+        function renderChartAndMatrix() {
+            const ctx = document.getElementById('juzDistributionChart').getContext('2d');
+            const countsL = JUZ_TIERS.map(t => mahasantriData.filter(s => s.gender === 'L' && s.juzCategory === t).length);
+            const countsP = JUZ_TIERS.map(t => mahasantriData.filter(s => s.gender === 'P' && s.juzCategory === t).length);
+
+            if (chartInstance) chartInstance.destroy();
+
+            const datasets = [];
+            if (mainViewMode === 'all' || mainViewMode === 'L') {
+                datasets.push({
+                    label: 'Putra',
+                    data: countsL,
+                    backgroundColor: '#2F3185',
+                    borderRadius: 6,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.7
+                });
+            }
+            if (mainViewMode === 'all' || mainViewMode === 'P') {
+                datasets.push({
+                    label: 'Putri',
+                    data: countsP,
+                    backgroundColor: '#EC4899',
+                    borderRadius: 6,
+                    barPercentage: 0.65,
+                    categoryPercentage: 0.7
+                });
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: JUZ_TIERS.map(t => `${t} Juz`),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            titleFont: { family: 'JetBrains Mono', size: 12 },
+                            bodyFont: { family: 'JetBrains Mono', size: 12 },
+                            padding: 10,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', weight: '700', size: 11 }, color: '#475569' } },
+                        y: { beginAtZero: true, ticks: { stepSize: 2, font: { family: 'JetBrains Mono', size: 11 }, color: '#475569' }, grid: { color: '#F1F5F9' } }
+                    }
+                }
+            });
+
+            const totalL = countsL.reduce((a,b)=>a+b,0);
+            const totalP = countsP.reduce((a,b)=>a+b,0);
+            const totalAll = JUZ_TIERS.map((_, i) => countsL[i] + countsP[i]);
+
+            document.getElementById('matrixTableBody').innerHTML = `
+                <tr class="bg-white hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-6 border-r border-slate-200 font-bold text-ums-blue">PUTRA (BANIN)</td>
+                    ${countsL.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-amber-50 font-bold text-slate-900':'text-ums-blue'}">${c}</td>`).join('')}
+                    <td class="py-3 px-6 text-center font-extrabold text-ums-blue">${totalL}</td>
+                </tr>
+                <tr class="bg-putri-light hover:bg-pink-50/80 transition-colors">
+                    <td class="py-3 px-6 border-r border-slate-200 font-bold text-putri-dark">PUTRI (BANAT)</td>
+                    ${countsP.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-pink-100 font-bold text-slate-900':'text-putri-main'}">${c}</td>`).join('')}
+                    <td class="py-3 px-6 text-center font-extrabold text-putri-main">${totalP}</td>
+                </tr>
+                <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-200">
+                    <td class="py-3 px-6 border-r border-slate-200">TOTAL</td>
+                    ${totalAll.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-ums-gold/20 font-extrabold':''}">${c}</td>`).join('')}
+                    <td class="py-3 px-6 text-center font-extrabold">${totalL + totalP}</td>
+                </tr>
+            `;
+        }
+
+        function renderTop5() {
+            const sortFn = (a,b) => (b.juzCategory - a.juzCategory) || (b.itqan - a.itqan);
+            const topL = mahasantriData.filter(s => s.gender === 'L').sort(sortFn).slice(0,5);
+            const topP = mahasantriData.filter(s => s.gender === 'P').sort(sortFn).slice(0,5);
+
+            document.getElementById('listTopPutra').innerHTML = topL.map((s, idx) => `
+                <tr class="hover:bg-ums-blueLight/30 transition-colors">
+                    <td class="py-3 px-4 text-center font-extrabold border-r border-slate-200 ${idx===0?'bg-ums-gold text-slate-950':'text-ums-blue'}">${idx+1}</td>
+                    <td class="py-3 px-4 text-slate-600 border-r border-slate-200 tabular-nums">${s.id}</td>
+                    <td class="py-3 px-4 font-sans font-bold text-slate-900 border-r border-slate-200">${s.name}</td>
+                    <td class="py-3 px-4 text-center font-bold text-ums-blue bg-ums-blueLight/20 border-r border-slate-200 tabular-nums">${s.juzCategory} Juz</td>
+                    <td class="py-3 px-4 text-right font-extrabold text-slate-900 tabular-nums">${s.itqan.toFixed(1)}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('listTopPutri').innerHTML = topP.map((s, idx) => `
+                <tr class="hover:bg-pink-50/50 transition-colors">
+                    <td class="py-3 px-4 text-center font-extrabold border-r border-putri-border ${idx===0?'bg-ums-gold text-slate-950':'bg-putri-header text-putri-dark'}">${idx+1}</td>
+                    <td class="py-3 px-4 text-putri-main border-r border-putri-border tabular-nums">${s.id}</td>
+                    <td class="py-3 px-4 font-sans font-bold text-slate-900 border-r border-putri-border">${s.name}</td>
+                    <td class="py-3 px-4 text-center font-bold text-white bg-putri-main border-r border-putri-border tabular-nums">${s.juzCategory} Juz</td>
+                    <td class="py-3 px-4 text-right font-extrabold text-putri-dark tabular-nums">${s.itqan.toFixed(1)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function setMainViewMode(mode) {
+            mainViewMode = mode;
+            ['all', 'L', 'P'].forEach(m => {
+                const btn = document.getElementById(`btnView${m.charAt(0).toUpperCase() + m.slice(1)}`);
+                if (m === mode) {
+                    btn.className = 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-blue text-white shadow-sm transition-all';
+                } else {
+                    btn.className = 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg text-slate-600 hover:text-slate-900 transition-all';
+                }
+            });
+
+            const boxL = document.getElementById('boxTopPutra');
+            const boxP = document.getElementById('boxTopPutri');
+            const sec = document.getElementById('top5Section');
+
+            if (mode === 'all') {
+                boxL.classList.remove('hidden'); boxP.classList.remove('hidden');
+                sec.className = 'grid grid-cols-1 lg:grid-cols-2 gap-6';
+            } else if (mode === 'L') {
+                boxL.classList.remove('hidden'); boxP.classList.add('hidden');
+                sec.className = 'grid grid-cols-1 gap-6';
+            } else if (mode === 'P') {
+                boxL.classList.add('hidden'); boxP.classList.remove('hidden');
+                sec.className = 'grid grid-cols-1 gap-6';
+            }
+            renderChartAndMatrix();
+        }
+
+        function renderLiveTable() {
+            const q = document.getElementById('liveSearch').value.toLowerCase();
+            const juzVal = document.getElementById('filterJuz').value;
+            const itqanVal = document.getElementById('filterItqan').value;
+
+            const filtered = mahasantriData.filter(s => {
+                // Filter Pencarian Nama / NIM
+                if (q && !s.name.toLowerCase().includes(q) && !s.id.toLowerCase().includes(q) && !s.nameArab.includes(q)) {
+                    return false;
+                }
+                // Filter Juz
+                if (juzVal !== 'all' && s.juzCategory !== parseInt(juzVal)) {
+                    return false;
+                }
+                // Filter Nilai Itqan
+                if (itqanVal === '98' && s.itqan < 98) return false;
+                if (itqanVal === '95' && (s.itqan < 95 || s.itqan >= 98)) return false;
+                if (itqanVal === '90' && (s.itqan < 90 || s.itqan >= 95)) return false;
+                if (itqanVal === 'maqbul' && s.itqan >= 90) return false;
+
+                return true;
+            });
+
+            document.getElementById('liveTableBody').innerHTML = filtered.map((s, idx) => `
+                <tr class="${s.gender === 'P' ? 'bg-putri-light/50 hover:bg-putri-light' : 'bg-white hover:bg-slate-50'} transition-colors">
+                    <td class="py-3 px-4 text-center text-slate-500 border-r border-slate-200 tabular-nums">${idx+1}</td>
+                    <td class="py-3 px-4 font-bold ${s.gender === 'P' ? 'text-putri-main' : 'text-ums-blue'} border-r border-slate-200 tabular-nums">${s.id}</td>
+                    <td class="py-3 px-4 border-r border-slate-200">
+                        <div class="font-extrabold text-slate-900">${s.name}</div>
+                        <div class="font-arabic text-xs text-slate-500">${s.nameArab}</div>
+                    </td>
+                    <td class="py-3 px-4 text-center border-r border-slate-200">
+                        <span class="px-2.5 py-1 rounded-md text-[11px] font-bold ${s.gender === 'P' ? 'bg-pink-100 text-putri-dark' : 'bg-ums-blueLight text-ums-blue'}">
+                            ${s.gender === 'L' ? 'Putra (Banin)' : 'Putri (Banat)'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-center font-bold border-r border-slate-200 ${s.gender==='P'?'text-putri-main':'text-ums-blue'} tabular-nums">
+                        ${s.juzCategory} Juz
+                    </td>
+                    <td class="py-3 px-4 text-right font-extrabold text-slate-900 tabular-nums">${s.itqan.toFixed(1)}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
