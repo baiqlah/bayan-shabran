@@ -82,19 +82,13 @@
                         <span>BAYAN SHABRAN</span>
                         <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-mono text-[10px] rounded border border-emerald-500/30 flex items-center gap-1.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            Live Sync: Google Sheets
+                            Live Sync
                         </span>
                     </div>
                     <div class="text-[10px] font-mono text-slate-300 hidden sm:block">Pondok Hajjah Nuriyah Shabran — Universitas Muhammadiyah Surakarta</div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <button onclick="window.location.reload()" class="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    <span>Sinkronisasi</span>
-                </button>
-            </div>
         </div>
     </header>
 
@@ -103,10 +97,13 @@
 
         <!-- BANNER & FILTER TAMPILAN -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 bg-white p-6 rounded-2xl shadow-card border border-slate-200/80">
-            <div class="space-y-1">
-                <div class="inline-flex items-center gap-2 text-xs font-mono font-bold text-ums-blue uppercase tracking-wider bg-ums-blueLight px-2.5 py-1 rounded-md">
-                    <span class="w-1.5 h-1.5 rounded-full bg-ums-blue"></span>
-                    Live Google Sheet Preview Mode
+            <div class="space-y-1.5">
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Tampilan Jam & Tanggal untuk Mobile & Desktop -->
+                    <div class="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-slate-700 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-md tabular-nums">
+                        <svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <span id="liveClockBanner">Sabtu, 14 November 2026 | 00:00:00 WIB</span>
+                    </div>
                 </div>
                 <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                     Sistem Informasi Hafalan al Quran Mahasantri I'dad Pondok Shabran 2026/2027
@@ -115,7 +112,7 @@
             </div>
 
             <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 shrink-0">
-                <button onclick="setMainViewMode('all')" id="btnViewAll" class="px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-blue text-white shadow-sm transition-all">
+                <button onclick="setMainViewMode('all')" id="btnViewAll" class="px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-gold text-slate-950 shadow-sm transition-all">
                     Gabungan (40)
                 </button>
                 <button onclick="setMainViewMode('L')" id="btnViewL" class="px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg text-slate-600 hover:text-slate-900 transition-all">
@@ -128,54 +125,53 @@
         </div>
 
         <!-- 1. KARTU RINGKASAN STATISTIK -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between">
+        <section id="statsSection" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div id="cardStatTotal" class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">Total Mahasantri</span>
                 <div class="mt-4 flex items-baseline justify-between">
-                    <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">40</span>
-                    <span class="text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">Putra & Putri</span>
+                    <span id="statTotalCount" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">40</span>
+                    <span id="statTotalLabel" class="text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">Putra & Putri</span>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between border-t-4 border-t-ums-blue">
+            <div id="cardStatPutra" class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between border-t-4 border-t-ums-blue">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-ums-blue">Putra (Banin)</span>
                 <div class="mt-4 flex items-baseline justify-between">
                     <span class="text-3xl sm:text-4xl font-extrabold text-ums-blue tabular-nums">20</span>
                     <span class="text-xs font-mono text-slate-500">Musrif: Ust. Ardhansyah</span>
                 </div>
             </div>
-            <div class="bg-putri-light p-5 rounded-2xl shadow-card border border-putri-border flex flex-col justify-between border-t-4 border-t-putri-main">
+            <div id="cardStatPutri" class="bg-putri-light p-5 rounded-2xl shadow-card border border-putri-border flex flex-col justify-between border-t-4 border-t-putri-main">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-putri-dark">Putri (Banat)</span>
                 <div class="mt-4 flex items-baseline justify-between">
                     <span class="text-3xl sm:text-4xl font-extrabold text-putri-main tabular-nums">20</span>
                     <span class="text-xs font-mono text-putri-dark bg-white/80 px-2 py-1 rounded-lg">Musrifah: Ustdh. Asma'</span>
                 </div>
             </div>
-            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between border-t-4 border-t-ums-gold">
+            <div id="cardStatKhatam" class="bg-white p-5 rounded-2xl shadow-card border border-slate-200/80 flex flex-col justify-between border-t-4 border-t-ums-gold">
                 <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">Khatam 30 Juz</span>
                 <div class="mt-4 flex items-baseline justify-between gap-3">
-                    <span id="statKhatamCount" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">12</span>
+                    <span id="statKhatamCount" class="text-3xl sm:text-4xl font-extrabold text-slate-900 tabular-nums">9</span>
                     <span dir="rtl" lang="ar" class="text-sm text-right text-amber-700 bg-amber-50 px-2.5 py-1 rounded-lg leading-relaxed">
                     بَارَكَ اللهُ لَهُمْ وَلِوَالِدَيْهِمْ وَنَفَعَ بِهِمُ الْإِسْلَامَ وَالْمُسْلِمِيْنَ</span>
+                </div>
             </div>
-</div>
-
         </section>
 
         <!-- 2. GRAFIK DISTRIBUSI & MATRIKS JUZ (5, 10, 15, 20, 25, 30 JUZ) -->
         <section class="bg-white rounded-2xl shadow-card border border-slate-200/80 overflow-hidden">
             <div class="px-6 py-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-2.5 h-5 bg-ums-blue rounded-sm"></div>
+                    <div id="chartAccentBar" class="w-2.5 h-5 bg-ums-blue rounded-sm"></div>
                     <h2 class="text-sm font-bold uppercase tracking-wider text-slate-900">
                         Distribusi Capaian Juz Mahasantri (5, 10, 15, 20, 25, 30 Juz)
                     </h2>
                 </div>
                 <div class="flex items-center gap-4 font-mono text-xs">
-                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+                    <div id="legendPutra" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
                         <span class="w-3 h-3 rounded bg-ums-blue inline-block"></span>
                         <span class="text-slate-800 font-bold">Putra</span>
                     </div>
-                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
+                    <div id="legendPutri" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-xs">
                         <span class="w-3 h-3 rounded bg-putri-main inline-block"></span>
                         <span class="text-putri-main font-bold">Putri</span>
                     </div>
@@ -378,8 +374,37 @@
         let mainViewMode = 'all';
         let chartInstance = null;
 
+        function updateLiveClock() {
+            const now = new Date();
+            const hariList = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const bulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            // Konversi ke waktu WIB (UTC+7)
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const wibTime = new Date(utc + (7 * 3600000));
+
+            const hari = hariList[wibTime.getDay()];
+            const tanggal = String(wibTime.getDate()).padStart(2, '0');
+            const bulan = bulanList[wibTime.getMonth()];
+            const tahun = wibTime.getFullYear();
+
+            const jam = String(wibTime.getHours()).padStart(2, '0');
+            const menit = String(wibTime.getMinutes()).padStart(2, '0');
+            const detik = String(wibTime.getSeconds()).padStart(2, '0');
+
+            const formatted = `${hari}, ${tanggal} ${bulan} ${tahun} | ${jam}:${menit}:${detik} WIB`;
+
+            const headerEl = document.getElementById('liveClockHeader');
+            const bannerEl = document.getElementById('liveClockBanner');
+            if (headerEl) headerEl.textContent = formatted;
+            if (bannerEl) bannerEl.textContent = formatted;
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
-            refreshAll();
+            updateLiveClock();
+            setInterval(updateLiveClock, 1000);
+            setMainViewMode('all');
+            renderTop5();
         });
 
         function refreshAll() {
@@ -447,23 +472,36 @@
             const totalP = countsP.reduce((a,b)=>a+b,0);
             const totalAll = JUZ_TIERS.map((_, i) => countsL[i] + countsP[i]);
 
-            document.getElementById('matrixTableBody').innerHTML = `
-                <tr class="bg-white hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-6 border-r border-slate-200 font-bold text-ums-blue">PUTRA (BANIN)</td>
-                    ${countsL.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-amber-50 font-bold text-slate-900':'text-ums-blue'}">${c}</td>`).join('')}
-                    <td class="py-3 px-6 text-center font-extrabold text-ums-blue">${totalL}</td>
-                </tr>
-                <tr class="bg-putri-light hover:bg-pink-50/80 transition-colors">
-                    <td class="py-3 px-6 border-r border-slate-200 font-bold text-putri-dark">PUTRI (BANAT)</td>
-                    ${countsP.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-pink-100 font-bold text-slate-900':'text-putri-main'}">${c}</td>`).join('')}
-                    <td class="py-3 px-6 text-center font-extrabold text-putri-main">${totalP}</td>
-                </tr>
-                <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-200">
-                    <td class="py-3 px-6 border-r border-slate-200">TOTAL</td>
-                    ${totalAll.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-ums-gold/20 font-extrabold':''}">${c}</td>`).join('')}
-                    <td class="py-3 px-6 text-center font-extrabold">${totalL + totalP}</td>
-                </tr>
-            `;
+            let matrixRowsHTML = '';
+            if (mainViewMode === 'all' || mainViewMode === 'L') {
+                matrixRowsHTML += `
+                    <tr class="bg-white hover:bg-slate-50 transition-colors">
+                        <td class="py-3 px-6 border-r border-slate-200 font-bold text-ums-blue">PUTRA (BANIN)</td>
+                        ${countsL.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-amber-50 font-bold text-slate-900':'text-ums-blue'}">${c}</td>`).join('')}
+                        <td class="py-3 px-6 text-center font-extrabold text-ums-blue">${totalL}</td>
+                    </tr>
+                `;
+            }
+            if (mainViewMode === 'all' || mainViewMode === 'P') {
+                matrixRowsHTML += `
+                    <tr class="bg-putri-light hover:bg-pink-50/80 transition-colors">
+                        <td class="py-3 px-6 border-r border-slate-200 font-bold text-putri-dark">PUTRI (BANAT)</td>
+                        ${countsP.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-pink-100 font-bold text-slate-900':'text-putri-main'}">${c}</td>`).join('')}
+                        <td class="py-3 px-6 text-center font-extrabold text-putri-main">${totalP}</td>
+                    </tr>
+                `;
+            }
+            if (mainViewMode === 'all') {
+                matrixRowsHTML += `
+                    <tr class="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-200">
+                        <td class="py-3 px-6 border-r border-slate-200">TOTAL</td>
+                        ${totalAll.map((c, i) => `<td class="py-3 px-4 text-center border-r border-slate-200 ${i===5?'bg-ums-gold/20 font-extrabold':''}">${c}</td>`).join('')}
+                        <td class="py-3 px-6 text-center font-extrabold">${totalL + totalP}</td>
+                    </tr>
+                `;
+            }
+
+            document.getElementById('matrixTableBody').innerHTML = matrixRowsHTML;
         }
 
         function renderTop5() {
@@ -494,14 +532,66 @@
 
         function setMainViewMode(mode) {
             mainViewMode = mode;
-            ['all', 'L', 'P'].forEach(m => {
-                const btn = document.getElementById(`btnView${m.charAt(0).toUpperCase() + m.slice(1)}`);
-                if (m === mode) {
-                    btn.className = 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-blue text-white shadow-sm transition-all';
-                } else {
-                    btn.className = 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg text-slate-600 hover:text-slate-900 transition-all';
-                }
-            });
+
+            const btnAll = document.getElementById('btnViewAll');
+            const btnL = document.getElementById('btnViewL');
+            const btnP = document.getElementById('btnViewP');
+            const inactiveClass = 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg text-slate-600 hover:text-slate-900 transition-all';
+
+            btnAll.className = mode === 'all'
+                ? 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-gold text-slate-950 shadow-sm transition-all'
+                : inactiveClass;
+            btnL.className = mode === 'L'
+                ? 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-ums-blue text-white shadow-sm transition-all'
+                : inactiveClass;
+            btnP.className = mode === 'P'
+                ? 'px-4 py-2 text-xs font-mono font-bold uppercase rounded-lg bg-putri-main text-white shadow-sm transition-all'
+                : inactiveClass;
+
+            // Update Kartu Statistik berdasarkan Mode
+            const statsSection = document.getElementById('statsSection');
+            const cardPutra = document.getElementById('cardStatPutra');
+            const cardPutri = document.getElementById('cardStatPutri');
+            const statTotalCount = document.getElementById('statTotalCount');
+            const statTotalLabel = document.getElementById('statTotalLabel');
+            const statKhatamCount = document.getElementById('statKhatamCount');
+            const legendPutra = document.getElementById('legendPutra');
+            const legendPutri = document.getElementById('legendPutri');
+            const chartAccentBar = document.getElementById('chartAccentBar');
+
+            const activeData = mode === 'all' ? mahasantriData : mahasantriData.filter(s => s.gender === mode);
+            const khatamCount = activeData.filter(s => s.juzCategory === 30).length;
+            statTotalCount.textContent = activeData.length;
+            statKhatamCount.textContent = khatamCount;
+
+            if (mode === 'all') {
+                cardPutra.classList.remove('hidden');
+                cardPutri.classList.remove('hidden');
+                statsSection.className = 'grid grid-cols-2 lg:grid-cols-4 gap-4';
+                statTotalLabel.textContent = 'Putra & Putri';
+                statTotalLabel.className = 'text-xs font-mono font-semibold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg';
+                legendPutra.classList.remove('hidden');
+                legendPutri.classList.remove('hidden');
+                chartAccentBar.className = 'w-2.5 h-5 bg-ums-gold rounded-sm';
+            } else if (mode === 'L') {
+                cardPutra.classList.remove('hidden');
+                cardPutri.classList.add('hidden');
+                statsSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-4';
+                statTotalLabel.textContent = 'Khusus Putra';
+                statTotalLabel.className = 'text-xs font-mono font-semibold text-ums-blue bg-ums-blueLight px-2 py-1 rounded-lg';
+                legendPutra.classList.remove('hidden');
+                legendPutri.classList.add('hidden');
+                chartAccentBar.className = 'w-2.5 h-5 bg-ums-blue rounded-sm';
+            } else if (mode === 'P') {
+                cardPutra.classList.add('hidden');
+                cardPutri.classList.remove('hidden');
+                statsSection.className = 'grid grid-cols-1 md:grid-cols-3 gap-4';
+                statTotalLabel.textContent = 'Khusus Putri';
+                statTotalLabel.className = 'text-xs font-mono font-semibold text-putri-dark bg-putri-header px-2 py-1 rounded-lg';
+                legendPutra.classList.add('hidden');
+                legendPutri.classList.remove('hidden');
+                chartAccentBar.className = 'w-2.5 h-5 bg-putri-main rounded-sm';
+            }
 
             const boxL = document.getElementById('boxTopPutra');
             const boxP = document.getElementById('boxTopPutri');
@@ -517,7 +607,9 @@
                 boxL.classList.add('hidden'); boxP.classList.remove('hidden');
                 sec.className = 'grid grid-cols-1 gap-6';
             }
+
             renderChartAndMatrix();
+            renderLiveTable();
         }
 
         function renderLiveTable() {
@@ -526,6 +618,10 @@
             const itqanVal = document.getElementById('filterItqan').value;
 
             const filtered = mahasantriData.filter(s => {
+                // Filter Mode Tampilan Utama (Gabungan / Putra / Putri)
+                if (mainViewMode !== 'all' && s.gender !== mainViewMode) {
+                    return false;
+                }
                 // Filter Pencarian Nama / NIM
                 if (q && !s.name.toLowerCase().includes(q) && !s.id.toLowerCase().includes(q) && !s.nameArab.includes(q)) {
                     return false;
